@@ -51,7 +51,6 @@
           </div>
 
           <form @submit.prevent="register" class="register-form">
-            <!-- Two Column Layout -->
             <div class="form-row">
               <div class="input-group">
                 <label>
@@ -160,25 +159,22 @@
               <span class="error-text" v-if="addressError">Address is required</span>
             </div>
 
-            <!-- Terms Agreement -->
             <label class="terms-checkbox">
               <input type="checkbox" v-model="agreeTerms" />
               <span>
-                I agree to the 
-                <a href="#" @click.prevent>Terms of Service</a> 
-                and 
+                I agree to the
+                <a href="#" @click.prevent>Terms of Service</a>
+                and
                 <a href="#" @click.prevent>Privacy Policy</a>
               </span>
             </label>
 
-            <!-- Register Button -->
             <button type="submit" class="register-button" :disabled="loading">
               <span v-if="loading" class="spinner"></span>
               <span v-else class="btn-icon">🚀</span>
               {{ loading ? "Creating account..." : "Create Account" }}
             </button>
 
-            <!-- Login Link -->
             <div class="form-footer">
               <p>
                 Already have an account?
@@ -239,23 +235,30 @@ const strengthText = computed(() => {
 // ================= VALIDATION =================
 const validateForm = () => {
   let isValid = true;
-  
+
   nameError.value = !name.value.trim();
   gymNameError.value = !gymName.value.trim();
   emailError.value = !email.value || !/^\S+@\S+\.\S+$/.test(email.value);
-  phoneError.value = !phone.value || !/^\d{10}$/.test(phone.value.replace(/\D/g, ''));
+  phoneError.value = !phone.value || !/^\d{10}$/.test(phone.value.replace(/\D/g, ""));
   passwordError.value = !password.value || password.value.length < 6;
   addressError.value = !address.value.trim();
-  
-  if (nameError.value || gymNameError.value || emailError.value || phoneError.value || passwordError.value || addressError.value) {
+
+  if (
+    nameError.value ||
+    gymNameError.value ||
+    emailError.value ||
+    phoneError.value ||
+    passwordError.value ||
+    addressError.value
+  ) {
     isValid = false;
   }
-  
+
   if (!agreeTerms.value) {
     alert("Please agree to the Terms of Service and Privacy Policy");
     isValid = false;
   }
-  
+
   return isValid;
 };
 
@@ -278,17 +281,11 @@ const register = async () => {
       address: address.value.trim(),
     });
 
-    // Save Token
     localStorage.setItem("token", res.data.token);
-
-    // Save User
     localStorage.setItem("user", JSON.stringify(res.data.user));
 
     alert("Registration Successful! Welcome to GymFlow.");
-
-    // Redirect to Dashboard
     router.push("/dashboard");
-
   } catch (error) {
     const errorMsg = error.response?.data?.message || "Registration failed. Please try again.";
     alert(errorMsg);
@@ -303,38 +300,66 @@ const goToLogin = () => {
 };
 </script>
 
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
+<style scoped>
+/* ================= COLOR TOKENS =================
+   Navy   #0B1F3A  – trust, structure (brand panel, headings)
+   Orange #F97316  – energy, the single action color (CTA, focus, accents)
+   Teal   #14B8A6  – strength / success (strong password)
+   Mist   #F1F5F9  – calm page background
+   Slate  #475569  – body text
+================================================= */
 .register-page {
+  --navy-900: #071428;
+  --navy-800: #0b1f3a;
+  --navy-700: #14305a;
+  --orange-500: #f97316;
+  --orange-400: #fb923c;
+  --orange-100: #ffedd5;
+  --orange-700: #c2410c;
+  --teal-500: #14b8a6;
+  --mist: #f1f5f9;
+  --line: #dbe3ee;
+  --text-strong: #0b1f3a;
+  --text-body: #475569;
+  --text-muted: #64748b;
+  --danger: #dc2626;
+  --warning: #f59e0b;
+
   min-height: 100vh;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(249, 115, 22, 0.1), transparent 40%),
+    radial-gradient(circle at 88% 82%, rgba(20, 184, 166, 0.1), transparent 40%),
+    var(--mist);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
 }
 
+.register-page *,
+.register-page *::before,
+.register-page *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .register-container {
   display: flex;
   max-width: 1300px;
   width: 100%;
-  background: white;
-  border-radius: 32px;
+  background: #ffffff;
+  border-radius: 28px;
   overflow: hidden;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 30px 60px -20px rgba(11, 31, 58, 0.35);
   min-height: 700px;
 }
 
 /* ================= LEFT BRAND SECTION ================= */
 .brand-section {
   flex: 1.2;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  background: linear-gradient(160deg, var(--navy-800) 0%, var(--navy-900) 100%);
   padding: 48px;
   display: flex;
   flex-direction: column;
@@ -345,11 +370,10 @@ const goToLogin = () => {
 
 .brand-bg-shape {
   position: absolute;
-  top: -50%;
-  right: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(250, 204, 21, 0.08) 0%, transparent 70%);
+  inset: 0;
+  background:
+    radial-gradient(circle at 85% 12%, rgba(249, 115, 22, 0.22), transparent 45%),
+    radial-gradient(circle at 10% 95%, rgba(20, 184, 166, 0.18), transparent 45%);
   pointer-events: none;
 }
 
@@ -366,22 +390,25 @@ const goToLogin = () => {
 }
 
 .logo-icon {
-  font-size: 48px;
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+  font-size: 40px;
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
 }
 
 .brand-name {
   font-size: 32px;
   font-weight: 800;
-  background: linear-gradient(135deg, #facc15, #f59e0b);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  letter-spacing: -0.02em;
+  color: #ffffff;
 }
 
 .brand-name span {
-  background: none;
-  color: #facc15;
+  color: var(--orange-500);
 }
 
 .brand-tagline {
@@ -389,16 +416,17 @@ const goToLogin = () => {
 }
 
 .tagline {
-  font-size: 32px;
-  font-weight: 700;
-  color: white;
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #ffffff;
   margin-bottom: 12px;
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
 .sub-tagline {
-  font-size: 14px;
-  color: #94a3b8;
+  font-size: 15px;
+  color: #a9b8cf;
 }
 
 .brand-stats {
@@ -408,43 +436,45 @@ const goToLogin = () => {
 }
 
 .stat {
-  text-align: center;
+  text-align: left;
+  padding-left: 14px;
+  border-left: 3px solid var(--orange-500);
 }
 
 .stat-number {
   font-size: 28px;
   font-weight: 800;
-  color: #facc15;
+  color: #ffffff;
 }
 
 .stat-label {
   font-size: 12px;
-  color: #94a3b8;
+  color: #a9b8cf;
   margin-top: 4px;
 }
 
 .testimonial {
   position: relative;
   z-index: 1;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.06);
   border-radius: 20px;
-  padding: 20px;
+  padding: 22px;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .quote-icon {
   font-size: 48px;
-  color: #facc15;
-  opacity: 0.5;
+  color: var(--orange-400);
+  opacity: 0.8;
   line-height: 1;
   margin-bottom: 8px;
 }
 
 .quote-text {
-  color: #cbd5e1;
+  color: #dbe4f2;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.6;
   margin-bottom: 16px;
   font-style: italic;
 }
@@ -458,13 +488,13 @@ const goToLogin = () => {
 .author-avatar {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, #facc15, #f59e0b);
+  background: var(--orange-500);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--navy-900);
 }
 
 .author-info {
@@ -474,12 +504,12 @@ const goToLogin = () => {
 .author-name {
   font-size: 14px;
   font-weight: 600;
-  color: white;
+  color: #ffffff;
 }
 
 .author-gym {
-  font-size: 11px;
-  color: #94a3b8;
+  font-size: 12px;
+  color: #a9b8cf;
 }
 
 /* ================= RIGHT FORM SECTION ================= */
@@ -489,7 +519,7 @@ const goToLogin = () => {
   align-items: center;
   justify-content: center;
   padding: 48px;
-  background: white;
+  background: #ffffff;
   overflow-y: auto;
 }
 
@@ -505,28 +535,29 @@ const goToLogin = () => {
 
 .welcome-badge {
   display: inline-block;
-  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  background: var(--orange-100);
   padding: 6px 16px;
   border-radius: 40px;
   font-size: 12px;
-  font-weight: 600;
-  color: #b45309;
+  font-weight: 700;
+  color: var(--orange-700);
   margin-bottom: 20px;
 }
 
 .form-header h2 {
   font-size: 28px;
-  font-weight: 700;
-  color: #1e293b;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-strong);
   margin-bottom: 8px;
 }
 
 .form-header p {
-  color: #64748b;
+  color: var(--text-muted);
   font-size: 14px;
 }
 
-/* Form Styles */
+/* ================= FORM ================= */
 .register-form {
   display: flex;
   flex-direction: column;
@@ -551,62 +582,71 @@ const goToLogin = () => {
   gap: 8px;
   font-size: 13px;
   font-weight: 600;
-  color: #334155;
+  color: var(--text-strong);
 }
 
 .label-icon {
   font-size: 14px;
 }
 
-.form-input {
-  width: 100%;
-  padding: 12px 16px;
-  border: 2px solid #e2e8f0;
-  border-radius: 12px;
-  font-size: 14px;
-  transition: all 0.2s ease;
-  font-family: inherit;
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: #facc15;
-  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.1);
-}
-
-.form-input.input-error {
-  border-color: #ef4444;
-}
-
+.form-input,
 .form-textarea {
   width: 100%;
   padding: 12px 16px;
-  border: 2px solid #e2e8f0;
+  background: #f8fafc;
+  color: var(--text-strong);
+  border: 1.5px solid var(--line);
   border-radius: 12px;
   font-size: 14px;
-  transition: all 0.2s ease;
   font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.form-textarea {
   resize: vertical;
 }
 
-.form-textarea:focus {
-  outline: none;
-  border-color: #facc15;
-  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.1);
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: #94a3b8;
 }
 
+.form-input:hover,
+.form-textarea:hover {
+  border-color: #b9c6d8;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  background: #ffffff;
+  border-color: var(--orange-500);
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.16);
+}
+
+.form-input.input-error,
 .form-textarea.input-error {
-  border-color: #ef4444;
+  border-color: var(--danger);
+  background: #fef2f2;
+}
+
+.form-input.input-error:focus,
+.form-textarea.input-error:focus {
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.15);
 }
 
 .error-text {
-  font-size: 11px;
-  color: #ef4444;
+  font-size: 12px;
+  color: var(--danger);
 }
 
-/* Password Wrapper */
+/* ================= PASSWORD ================= */
 .password-wrapper {
   position: relative;
+}
+
+.password-wrapper .form-input {
+  padding-right: 48px;
 }
 
 .toggle-password {
@@ -618,17 +658,21 @@ const goToLogin = () => {
   border: none;
   cursor: pointer;
   font-size: 18px;
-  padding: 0;
-  width: auto;
-  color: #94a3b8;
+  line-height: 1;
+  padding: 4px;
+  border-radius: 8px;
+  color: var(--text-muted);
 }
 
 .toggle-password:hover {
-  background: none;
-  transform: translateY(-50%) scale(1.1);
+  background: #e2e8f0;
 }
 
-/* Password Strength */
+.toggle-password:focus-visible {
+  outline: 2px solid var(--orange-500);
+  outline-offset: 2px;
+}
+
 .password-strength {
   display: flex;
   align-items: center;
@@ -637,51 +681,52 @@ const goToLogin = () => {
 }
 
 .strength-bar {
-  height: 4px;
-  border-radius: 4px;
-  transition: all 0.3s;
+  height: 5px;
+  border-radius: 5px;
+  transition: width 0.3s ease, background 0.3s ease;
 }
 
 .strength-bar.weak {
-  background: #ef4444;
+  background: var(--danger);
   width: 40px;
 }
 
 .strength-bar.medium {
-  background: #f59e0b;
+  background: var(--warning);
   width: 70px;
 }
 
 .strength-bar.strong {
-  background: #10b981;
+  background: var(--teal-500);
   width: 100px;
 }
 
 .strength-text {
-  font-size: 11px;
-  color: #64748b;
+  font-size: 12px;
+  color: var(--text-muted);
 }
 
-/* Terms Checkbox */
+/* ================= TERMS ================= */
 .terms-checkbox {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 12px;
-  color: #475569;
+  font-size: 13px;
+  color: var(--text-body);
   cursor: pointer;
-  margin: 8px 0;
+  margin: 4px 0;
 }
 
 .terms-checkbox input {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
   cursor: pointer;
-  accent-color: #facc15;
+  accent-color: var(--orange-500);
 }
 
 .terms-checkbox a {
-  color: #f59e0b;
+  color: var(--orange-700);
+  font-weight: 600;
   text-decoration: none;
 }
 
@@ -689,32 +734,45 @@ const goToLogin = () => {
   text-decoration: underline;
 }
 
-/* Register Button */
+/* ================= BUTTON ================= */
 .register-button {
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  color: white;
+  background: var(--orange-500);
+  color: var(--navy-900);
   border: none;
   padding: 14px 24px;
-  border-radius: 40px;
+  border-radius: 14px;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
+  font-family: inherit;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  transition: all 0.3s ease;
-  margin-top: 8px;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 8px 18px -8px rgba(249, 115, 22, 0.7);
+  margin-top: 4px;
 }
 
 .register-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
+  background: var(--orange-400);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 22px -8px rgba(249, 115, 22, 0.75);
+}
+
+.register-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.register-button:focus-visible {
+  outline: 3px solid var(--navy-800);
+  outline-offset: 3px;
 }
 
 .register-button:disabled {
-  opacity: 0.7;
+  opacity: 0.65;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .btn-icon {
@@ -724,48 +782,50 @@ const goToLogin = () => {
 .spinner {
   width: 18px;
   height: 18px;
-  border: 2px solid white;
+  border: 2px solid var(--navy-900);
   border-top-color: transparent;
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-/* Form Footer */
+/* ================= FOOTER ================= */
 .form-footer {
   text-align: center;
   padding-top: 16px;
-  border-top: 1px solid #e2e8f0;
-  margin-top: 8px;
+  border-top: 1px solid var(--line);
+  margin-top: 4px;
 }
 
 .form-footer p {
   font-size: 13px;
-  color: #64748b;
+  color: var(--text-muted);
 }
 
 .login-link {
-  color: #f59e0b;
-  font-weight: 600;
+  color: var(--orange-700);
+  font-weight: 700;
   cursor: pointer;
   margin-left: 5px;
   transition: color 0.2s;
 }
 
 .login-link:hover {
-  color: #d97706;
+  color: var(--navy-800);
   text-decoration: underline;
 }
 
-/* Responsive Design */
+/* ================= RESPONSIVE ================= */
 @media (max-width: 1024px) {
   .brand-stats {
     gap: 20px;
   }
-  
+
   .stat-number {
     font-size: 22px;
   }
@@ -776,44 +836,67 @@ const goToLogin = () => {
     flex-direction: column;
     max-width: 600px;
   }
-  
+
   .brand-section {
     padding: 32px;
   }
-  
+
+  .logo-wrapper,
+  .brand-tagline {
+    margin-bottom: 28px;
+  }
+
   .tagline {
-    font-size: 24px;
+    font-size: 26px;
   }
-  
+
   .brand-stats {
-    margin-bottom: 24px;
+    margin-bottom: 0;
   }
-  
+
   .testimonial {
     display: none;
   }
-  
+
   .form-section {
     padding: 32px;
   }
 }
 
 @media (max-width: 640px) {
+  .register-page {
+    padding: 12px;
+  }
+
+  .register-container {
+    border-radius: 22px;
+  }
+
   .form-row {
     grid-template-columns: 1fr;
     gap: 16px;
   }
-  
-  .register-page {
-    padding: 16px;
+
+  .form-section {
+    padding: 24px 20px;
   }
-  
+
   .form-header h2 {
     font-size: 24px;
   }
-  
+
   .brand-stats {
-    justify-content: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .register-page *,
+  .register-page *::before,
+  .register-page *::after {
+    transition: none !important;
+    animation-duration: 0.01ms !important;
   }
 }
 </style>
