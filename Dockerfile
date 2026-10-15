@@ -1,5 +1,4 @@
 
-# Build the Vue application
 FROM node:22-alpine AS build
 
 WORKDIR /app
@@ -10,7 +9,6 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-# Serve the production build
 FROM nginx:alpine
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
